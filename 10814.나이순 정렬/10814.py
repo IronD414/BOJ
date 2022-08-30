@@ -18,3 +18,18 @@
 한 줄에 한 명씩 나이와 이름을 공백으로 구분해 출력한다.
 """
 
+# initial set domain
+n = int(input())
+
+membersInfo = []
+
+for order in range(n):
+    person = input().split()
+    membersInfo.append([int(person[0]), person[1], order])
+
+# process domain
+membersInfo.sort(key=lambda x:(x[0], x[2]))
+
+# result domain
+for i in range(n):
+    print(membersInfo[i][0], membersInfo[i][1])
