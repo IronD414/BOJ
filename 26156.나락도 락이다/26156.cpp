@@ -1,94 +1,69 @@
 #include <iostream>
 #include <string>
 #include <cmath>
+#include <algorithm>
 using namespace std;
 
-int dp_K(string *input, int pos){
-	int Kpos = input->find("K", pos);
-	if (Kpos == string::npos){
-		cout << 0;
-		return 0;
-	}
-	if (input->find("K", Kpos+1) == string::npos){
-		return pow(2, Kpos-pos);
-	}
-	return 2*dp_K(input, Kpos+1)*pow(2, Kpos-pos);	
-}
+int dpK(string s, int n);
+int dpC(string s, int n);
+int dpO(string s, int n);
+int dpR(string s, int n);
 
-int dp_CK(string *input, int pos){
-	int Cpos = input->find("C", pos);
-	if (Cpos == string::npos){
-		cout << 0;
-		return 0;
-	}
-	int Kpos = input->find("K", Cpos+1);
-	if (Kpos == string::npos){
-		cout << 0;
-		return 0;
-	}
-	if (input->find("C", Cpos+1) == string::npos){
-		return pow(2, Cpos-pos)*dp_K(input, Cpos+1);
-	}
-	return 2*dp_CK(input, Cpos+1)*pow(2, Cpos-pos);
-}
+int N;
+string str;	// KCOR
+// KCKCOR
+// KKCOR
+// KCORR
+// 2(받고+안받고)*이번거 찾으러간다 + 1(받고)*다음거 찾으러간다
 
-int dp_OCK(string *input, int pos){
-	int Opos = input->find("O", pos);
-	if (Opos == string::npos){
-		cout << 0;
-		return 0;
+int dpK(string s, int n){
+	int result = 0;
+	for (int i=0; i<n-3; i++){
+		if (s[i]=='K'){
+			result += 2*dpK(s.substr(i+1, n-i-1), n-i-1) + dpC(s.substr(i+1, n-i-1), n-i-1);
+			return result;
+		}
 	}
-	int Cpos = input->find("C", Opos+1);
-	if (Cpos == string::npos){
-		cout << 0;
-		return 0;
-	}
-	int Kpos = input->find("K", Cpos+1);
-	if (Kpos == string::npos){
-		cout << 0;
-		return 0;
-	}
-	if (input->find("O", Opos+1) == string::npos){
-		return pow(2, Opos-pos)*dp_CK(input, Opos+1);
-	}
-	return 2*dp_OCK(input, Opos+1)*pow(2, Opos-pos);
+	return result;
 }
-
-int dp_ROCK(string *input, int pos){
-	int Rpos = input->find("R", pos);
-	if (Rpos == string::npos){
-		cout << 0;
-		return 0;
+int dpC(string s, int n){
+	int result = 0, mul = 1;
+	for (int i=0; i<n-2; i++){
+		if (s[i]=='C'){
+			result += 2*dpC(s.substr(i+1, n-i-1), n-i-1) + dpO(s.substr(i+1, n-i-1), n-i-1);
+			return result*mul;
+		}else mul *= 2;
 	}
-	int Opos = input->find("O", Rpos+1);
-	if (Opos == string::npos){
-		cout << 0;
-		return 0;
+	return result;
+}
+int dpO(string s, int n){
+	int result = 0, mul = 1;
+	for (int i=0; i<n-1; i++){
+		if (s[i]=='O'){
+			result += 2*dpO(s.substr(i+1, n-i-1), n-i-1) + dpR(s.substr(i+1, n-i-1), n-i-1);
+			return result;
+		}else mul *= 2;
 	}
-	int Cpos = input->find("C", Opos+1);
-	if (Cpos == string::npos){
-		cout << 0;
-		return 0;
+	return result;
+}
+int dpR(string s, int n){
+	int result = 0, mul = 1;
+	for (int i=0; i<n; i++){
+		if (s[i]=='R'){
+			result += 2*dpR(s.substr(i+1, n-i-1), n-i-1) + 1;
+			return result*mul;
+		}else mul *= 2;
 	}
-	int Kpos = input->find("K", Cpos+1);
-	if (Kpos == string::npos){
-		cout << 0;
-		return 0;
-	}
-	if (input->find("R", Rpos+1) == string::npos){
-		return dp_OCK(input, Rpos+1)*pow(2, Rpos-pos);
-	}
-	return 2*dp_OCK(input, Rpos+1)*pow(2, Rpos-pos);
+	return result;
 }
 
 int main(int argc, char const *argv[])
 {
-	int N, result = 0;
-	string input;
+	int result = 0;
 	cin >> N;
-	cin >> input;
-
-	cout << dp_ROCK(&input, 0);
+	cin >> str;
+	reverse(str.begin(), str.end());
+	cout << dpK(str, N);
 
 	return 0;
 }
