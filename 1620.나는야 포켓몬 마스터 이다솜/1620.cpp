@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <map>
 #include <string>
 using namespace std;
 
@@ -10,10 +11,12 @@ int main(int argc, char const *argv[])
 	int M;	// # of questions
 	cin >> N >> M;
 	string inputPokedex;
-	vector<string> pokedex;
+	map<string, int> pokedexByName;
+    map<int, string> pokedexByNumber;
 	for (int i=0; i<N; i++){
 		cin >> inputPokedex;
-		pokedex.push_back(inputPokedex);
+		pokedexByName[inputPokedex] = i+1;
+        pokedexByNumber[i+1] = inputPokedex;
 	}
 	string inputQuestion;
 	vector<string> answer;
@@ -24,13 +27,9 @@ int main(int argc, char const *argv[])
 		int qNumber;
 		try{
 			qNumber = stoi(inputQuestion);
-			answer.push_back(pokedex[qNumber-1]);
+			answer.push_back(pokedexByNumber.find(qNumber)->second);
 		}catch(invalid_argument const& ex){
-			for (int j=0; j<N; j++){
-				if (pokedex[j] == inputQuestion){ 
-					answer.push_back(to_string(j+1));
-				}
-			}
+            answer.push_back(to_string(pokedexByName.find(inputQuestion)->second));
 		}
 	}
 	for (auto s : answer){
