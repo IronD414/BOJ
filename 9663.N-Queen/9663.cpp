@@ -31,7 +31,7 @@ int main(int argc, char const *argv[])
 {
 	ios::sync_with_stdio(0);
 	cin >> N;
-	int result = 0;
+	int result = 0;k
 
 	dfs(0);
 
